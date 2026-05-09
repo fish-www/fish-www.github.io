@@ -1,0 +1,16 @@
+# wsdl
+
+import WebservicesImageUrl from "./assets/Webservices-en.svg";
+
+<WebservicesImageUrl
+  alt="web service 示意图"
+  style={{ width: "50%", maxWidth: "700px", height: "auto" }}
+/>
+
+.wsdl 文件可使用 axis 的 wsdl2java 工具转换为 java 代码，集成进项目使用
+
+axis 分为 1.x 和 2 两个版本，互不兼容，需要检查 .wsdl 文件对应的 axis 版本
+
+以 axis2 为例，wsdl2java 工具包含在 [axis-bin](https://axis.apache.org/axis2/java/core/download.html) 中，可直接下载使用
+
+除了通过命令行使用，也可以选择 SOAPUI 程序通过 GUI 进行操作
