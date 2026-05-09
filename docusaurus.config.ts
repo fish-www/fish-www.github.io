@@ -24,6 +24,8 @@ const config: Config = {
   // If you aren't using GitHub pages, you don't need these.
   organizationName: "fish-www", // Usually your GitHub org/user name.
   projectName: "fish-www.github.io", // Usually your repo name.
+  deploymentBranch: "gh-pages",
+  trailingSlash: false,
 
   onBrokenLinks: "throw",
 
