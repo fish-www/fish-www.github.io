@@ -49,6 +49,9 @@ const config: Config = {
             "https://github.com/fish-www/fish-www.github.io/tree/master/",
         },
         blog: {
+          postsPerPage: "ALL",
+          blogSidebarTitle: "All posts",
+          blogSidebarCount: "ALL",
           showReadingTime: true,
           feedOptions: {
             type: ["rss", "atom"],

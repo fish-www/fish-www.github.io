@@ -1,0 +1,7 @@
+dev:
+  label: "dev"
+  description: "开发"
+
+mc:
+  label: "mc"
+  description: "minecraft"
