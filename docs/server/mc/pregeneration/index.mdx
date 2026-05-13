@@ -1,0 +1,114 @@
+---
+id: 预生成
+sidebar_position: 1
+description: 使用 chunky 预生成区块，并导出 voxy 和 xaero world map 数据
+---
+
+> - [chunky](https://github.com/pop4959/Chunky)
+> - [voxy](https://github.com/MCRcortex/voxy)
+>   - [voxy-neoforge](https://github.com/j-shelfwood/voxy-neoforge)
+> - [Xaero's World Map](https://chocolateminecraft.com/worldmap.php)
+
+这里主要想实现的是：chunky 预生成好服务器上的一片区域之后，玩家可以一加入游戏就能拥有对这一片区域的 voxy 渲染和 xaero 地图
+
+为此，我们需要在客户端执行一部分操作
+
+## 生成数据
+
+### 复制存档
+
+首先，将服务器的存档文件夹 `world` 复制到客户端 `saves` 目录中
+
+启动 mc 客户端，选择单人游戏，进入之前复制过来的 `world` 世界
+
+### chunky 生成
+
+使用 chunky 进行预生成的操作可参考其 [wiki](https://github.com/pop4959/Chunky/wiki/Pregeneration)
+
+简单示例（在主世界生成）：
+
+```bash
+# 将半径设置为 5000 个方块
+/chunky radius 5000
+
+# 开始生成
+/chunky start
+```
+
+如果想要在下界生成，只需要在 start 前设置：
+
+```bash
+/chunky world minecraft:the_nether
+```
+
+等待进度条走完
+
+### voxy 导入
+
+在 chunky 生成好之后，使用 `/voxy import world <世界名>` 来导入
+
+```bash
+# 注意：第二个 world 是世界名
+/voxy import world world
+```
+
+如果是导入下界的数据，则为：
+
+```bash
+/voxy import world "world/DIM-1"
+```
+
+### xaero
+
+参考 [curseforge](https://www.curseforge.com/minecraft/mc-mods/xaeros-world-map) 页面中的解释：
+
+> How do I discover the map without manually walking?
+>
+> 如何在不手动行走的情况下探索地图？
+>
+> In singleplayer, the map is loaded directly from the world save. This means that you can pregenerate the world using whatever tools you prefer, relog and use the "Reload Regions" option in the world map settings to fix any conflicts in the map cache. In multiplayer, it isn't as simple. However, if you can download the server world save and enter the world in singleplayer, then you can pregenerate the world using a method of your choice, relog and then use the "Convert All Regions" in the world map settings to convert the whole world save to a multiplayer-compatible map instance saved to xaero->world-map->World->null->cm$converted. In older versions, xaero/world-map is simply XaeroWorldMap. You can copy/move that map instance folder to your server map instances in the xaero/world-map folder.
+>
+> 在单人游戏中，地图直接从世界存档加载。这意味着你可以使用任何偏好的工具预生成世界，重新登录后，在世界地图设置中使用 “Reload Regions” 选项来修复地图缓存中的任何冲突。而在多人游戏中，情况就没那么简单了。不过，如果你能下载服务器世界存档并在单人游戏中进入该世界，就可以选择一种方法预生成世界，重新登录后，在世界地图设置中使用 “Convert All Regions” 选项，将整个世界存档转换为兼容多人游戏的地图实例，并保存到 xaero->world-map->World->null->cm$converted 路径下。在旧版本中，xaero/world-map 直接就是 XaeroWorldMap。你可以将该地图实例文件夹复制/移动到 xaero/world-map 文件夹中的服务器地图实例目录下。
+
+我们已经完成了预生成的步骤，只需要在 xaero world map 的设置中点击 “Convert All Regions” 并等待其转换完毕即可
+
+## 单人游戏 to 多人游戏
+
+### voxy
+
+单人游戏 voxy 的数据保存在 `saves/<世界名>/voxy` 目录下，多人游戏 voxy 的数据保存在 `.voxy/saves/<服务器地址>` 目录下
+
+以服务器地址为 127.0.0.1:25565 为例
+
+将 `saves/world/voxy` 目录下的文件复制到 `.voxy/saves/127.0.0.1_25565` 目录中即可
+
+### xaero
+
+单人游戏 xaero 世界地图的数据保存在 `xaero/world-map/<世界名>/<维度>` 目录下
+
+转换之后，在此目录中会生成 `cm$converted` 文件夹
+
+多人游戏 xaero 世界地图的数据保存在 `xaero/world-map/<服务器地址>/<维度>/mw$-<种子>` 目录下
+
+其中，维度文件夹名称对应关系如下：
+
+- 主世界：`null`
+- 下界：`DIM-1`
+- 末地：`DIM1`
+
+以服务器地址为 127.0.0.1:25565，种子为 114514 为例，复制主世界数据
+
+将 `xaero/world-map/world/null/cm$converted` 目录下的文件复制到 `xaero/world-map/Multiplayer_127.0.0.1/null/mw$-114514` 目录中即可
+
+## 存档迁回服务器
+
+目前数据基本都已经生成并复制到多人游戏中了，将存档文件夹 `saves/world` 迁移回服务器上即可
+
+## 整合包
+
+如果想要导出整合包，将 voxy 数据和 xaero 世界地图提供给其他玩家，只需要确保整合包中包含以下目录即可：
+
+- `.voxy/saves/<服务器地址>`
+  - 如：`.voxy/saves/127.0.0.1_25565`
+- `xaero/world-map/<服务器地址>/<维度>/mw$-<种子>`
+  - 如：`xaero/world-map/Multiplayer_127.0.0.1/null/mw$-114514`
