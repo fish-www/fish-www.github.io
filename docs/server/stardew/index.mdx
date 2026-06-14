@@ -1,0 +1,30 @@
+---
+id: stardew
+description: 开设星露谷服务器
+sidebar_position: 4
+---
+
+> - [ValleyServer](https://github.com/Lixeer/ValleyServer)
+
+使用 [ValleyServer](https://github.com/Lixeer/ValleyServer) 部署星露谷服务器，直接参考 [Cookbook for Docker](https://github.com/Lixeer/ValleyServer/blob/main/oneclick-script/cookbook.md)
+
+之后从 release 中下载 Mods.zip，解压放到 `oneclick-script/docker/Mods` 目录（`docker-compose.yml` 中映射的），可以实现无人值守运行游戏等服务器必需的功能
+
+注意主持新农场时，调整联机小屋数量
+
+## Arch Linux 无法进行多人游戏问题
+
+参考 [临时解决 Arch Linux 原生运行 星露谷物语 时由 glibc 导致的 Galaxy API 初始化错误 ](https://yamr.cc/posts/err-smapi-galaxy-glibc-2-41/)
+
+```bash
+sudo pacman -S patchelf
+
+cd ~/.steam/steam/steamapps/common/Stardew\ Valley
+
+patchelf --clear-execstack libGalaxy64.so
+patchelf --clear-execstack libGalaxyCSharpGlue.so
+```
+
+## 未解决问题
+
+目前发现，节日结束时，房主不会自动调过剧情，有时候会导致玩家断开连接，需要通过 vnc 手动控制房主干预，不知道什么时候修复
