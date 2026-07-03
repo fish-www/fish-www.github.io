@@ -7,6 +7,42 @@ import WebservicesImageUrl from "./assets/Webservices-en.svg";
   style={{ width: "50%", maxWidth: "700px", height: "auto" }}
 />
 
+## cxf
+
+apache cxf 较新的版本需要至少 java 11 以上，java 8 请使用 [v3.5.9](https://archive.apache.org/dist/cxf/3.5.9/) 版本
+
+解压后通过其 wsdl2java 工具将 .wsdl 文件转换为 java 代码，集成进项目使用
+
+```bash
+./bin/wsdl2java -d src -client xxx.wsdl
+```
+
+项目 pom.xml 参考：
+
+```xml
+<properties>
+  <cxf.version>3.5.9</cxf.version>
+</properties>
+
+<dependencies>
+  <!-- CXF (JAX-WS) -->
+  <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-frontend-jaxws</artifactId>
+      <version>${cxf.version}</version>
+  </dependency>
+  <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-transports-http</artifactId>
+      <version>${cxf.version}</version>
+  </dependency>
+</dependencies>
+```
+
+## axis
+
+> axis 已不再维护，建议优先使用 apache cxf
+
 .wsdl 文件可使用 axis 的 wsdl2java 工具转换为 java 代码，集成进项目使用
 
 axis 分为 1.x 和 2 两个版本，互不兼容，需要检查 .wsdl 文件对应的 axis 版本
@@ -14,3 +50,89 @@ axis 分为 1.x 和 2 两个版本，互不兼容，需要检查 .wsdl 文件对
 以 axis2 为例，wsdl2java 工具包含在 [axis-bin](https://axis.apache.org/axis2/java/core/download.html) 中，可直接下载使用
 
 除了通过命令行使用，也可以选择 SOAPUI 程序通过 GUI 进行操作
+
+项目 pom.xml 参考：
+
+```xml
+<properties>
+  <axis2.version>1.7.9</axis2.version>
+	<axis.version>1.4</axis.version>
+</properties>
+
+<dependencies>
+  <!--axis2 begin-->
+  <dependency>
+      <groupId>org.apache.axis2</groupId>
+      <artifactId>axis2-spring</artifactId>
+      <version>${axis2.version}</version>
+      <exclusions>
+          <exclusion>
+              <groupId>javax.servlet</groupId>
+              <artifactId>servlet-api</artifactId>
+          </exclusion>
+      </exclusions>
+  </dependency>
+  <dependency>
+      <groupId>org.apache.axis2</groupId>
+      <artifactId>axis2-transport-http</artifactId>
+      <version>${axis2.version}</version>
+      <exclusions>
+          <exclusion>
+              <groupId>javax.servlet</groupId>
+              <artifactId>servlet-api</artifactId>
+          </exclusion>
+      </exclusions>
+  </dependency>
+  <dependency>
+      <groupId>org.apache.axis2</groupId>
+      <artifactId>axis2-transport-local</artifactId>
+      <version>${axis2.version}</version>
+      <exclusions>
+          <exclusion>
+              <groupId>javax.servlet</groupId>
+              <artifactId>servlet-api</artifactId>
+          </exclusion>
+      </exclusions>
+  </dependency>
+  <dependency>
+      <groupId>org.apache.axis2</groupId>
+      <artifactId>axis2-xmlbeans</artifactId>
+      <version>${axis2.version}</version>
+      <exclusions>
+          <exclusion>
+              <groupId>javax.servlet</groupId>
+              <artifactId>servlet-api</artifactId>
+          </exclusion>
+      </exclusions>
+  </dependency>
+  <!--axis2 end-->
+
+  <!--axis 1.4 begin-->
+  <dependency>
+    <groupId>org.apache.axis</groupId>
+    <artifactId>axis</artifactId>
+    <version>${axis.version}</version>
+  </dependency>
+  <dependency>
+    <groupId>org.apache.axis</groupId>
+    <artifactId>axis-jaxrpc</artifactId>
+    <version>${axis.version}</version>
+  </dependency>
+  <dependency>
+    <groupId>org.apache.axis</groupId>
+    <artifactId>axis-saaj</artifactId>
+    <version>${axis.version}</version>
+  </dependency>
+  <dependency>
+    <groupId>commons-discovery</groupId>
+    <artifactId>commons-discovery</artifactId>
+    <version>0.5</version>
+  </dependency>
+  <dependency>
+    <groupId>wsdl4j</groupId>
+    <artifactId>wsdl4j</artifactId>
+    <version>1.6.3</version>
+  </dependency>
+  <!--axis 1.4 end-->
+</dependencies>
+```
